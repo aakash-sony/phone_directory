@@ -38,12 +38,13 @@ again:
     case 1:
     {
         bool contactAdded = addContact();
-        if (contactAdded)
+        if (contactAdded == false)
+        {
+            addContact();
+        }
+        else
         {
             oneMoreChance();
-        }
-        else{
-            addContact();
         }
         break;
     }
@@ -87,11 +88,3 @@ void oneMoreChance()
         return;
     }
 }
-
-// Add Validation on Name, Contact Number and Address
-// When saving name, generate get current timestamp and save as unique contact id
-//  Update or Delete contact by Contact Number
-// Check if I am trying to add any contact with duplicate contact number, show messsage as already exist
-//  Contact Number Validation: 10 Digit | All numbers only | Number could lie between 0-9
-// Name Validation: 2-25 character(if going more than 25, show error message as only 25 character allowed, less than zero show error as invalid name)
-// Address Validation: 5-35 character otherwise show error

@@ -7,8 +7,9 @@
 
 struct contact
 {
+    long contactId;
     char name[30];
-    char telephone[30];
+    char contactNumber[30];
     char address[70];
 };
 
@@ -21,25 +22,35 @@ bool addContact()
     if (countContact < Max_Contacts)
     {
         struct contact newContact;
-
+    name:
+        fflush(stdin);
         printf("Enter the name: ");
-        scanf("%s", newContact.name);
+        gets(newContact.name);
+
         if (!isValidName(newContact.name))
         {
-            printf("Please enter valid name.");
-            return false;
+            printf("Please enter valid name. Name must be between (2-25 )character.\n");
+            goto name;
         }
-
-        printf("Enter telephone number: ");
-        scanf(" %s", newContact.telephone);
-        if (!isValidContactNumber(newContact.telephone))
+    contact:
+        printf("Enter contact number: ");
+        gets(newContact.contactNumber);
+        if (!isValidContactNumber(newContact.contactNumber))
         {
-            printf("Please enter valid telephonr number.");
-            return false;
+            printf("Please enter valid contact number. Contact number must be (10 digits only) and start from(6-9).\n");
+            goto contact;
         }
 
+    address:
         printf("Enter the address: ");
-        scanf("%s", newContact.address);
+        gets(newContact.address);
+        if (!isValidAddress(newContact.address))
+        {
+            printf("\nPlease enter a valid address.\n");
+            goto address;
+        }
+
+        newContact.contactId = getTimestamp();
 
         directory[countContact] = newContact;
         countContact++;
@@ -65,9 +76,9 @@ void showContact()
         printf("Contacts in the directory: \n");
         for (i = 0; i < countContact; i++)
         {
-            printf("\nContact %d", i + 1);
+            printf("\nContact Id: %ld", directory[i].contactId);
             printf("\nName: %s", directory[i].name);
-            printf("\nTelephone No: %s", directory[i].telephone);
+            printf("\nContact No: %s", directory[i].contactNumber);
             printf("\nAddress: %s", directory[i].address);
             printf("\n");
         }
@@ -79,24 +90,46 @@ void updateContact()
 {
     if (countContact == 0)
     {
-        printf("\nNo contacts in the directory to update.");
+        printf("\nNo contacts in the directory to update.\n");
     }
     else
     {
-        char name[30];
-        printf("Enter the name to update the existing contact: ");
-        scanf("%s", name);
+        char contactNum[20];
+        fflush(stdin);
+        printf("Enter the contact number to update the existing contact: ");
+        gets(contactNum);
         int found = 0;
         for (int i = 0; i < countContact; i++)
         {
-            if (strcmp(directory[i].name, name) == 0)
+            if (strcmp(directory[i].contactNumber, contactNum) == 0)
             {
+            againA:
+                fflush(stdin);
                 printf("Enter new name: ");
-                scanf("%s", directory[i].name);
-                printf("\nEnter new telephone number: ");
-                scanf("%s", directory[i].telephone);
+                gets(directory[i].name);
+                if (!isValidName(directory[i].name))
+                {
+                    printf("Please enter valid name. Name must be between (2-25 )character.\n");
+                    goto againA;
+                }
+            contactA:
+                fflush(stdin);
+                printf("Enter new contact number: ");
+                gets(directory[i].contactNumber);
+                if (!isValidContactNumber(directory[i].contactNumber))
+                {
+                    printf("Please enter valid contact number. Contact number must be (10 digits only) and start from(6-9).\n");
+                    goto contactA;
+                }
+            addressA:
+                fflush(stdin);
                 printf("Enter new address: ");
-                scanf("%s", directory[i].address);
+                gets(directory[i].address);
+                if (!isValidAddress(directory[i].address))
+                {
+                    printf("\nPlease enter a valid address.\n");
+                    goto addressA;
+                }
                 printf("\nContact updated successfully.");
                 found = 1;
                 break;
@@ -119,19 +152,20 @@ void deleteContact()
     }
     else
     {
-        char name[30], i, j;
-        printf("Enter the name to delete the existing contact: ");
-        scanf("%s", name);
+        char contactNum[10], i, j;
+        fflush(stdin);
+        printf("Enter the contact number which you want to delete :");
+        gets(contactNum);
         for (i = 0; i < countContact; i++)
         {
-            if (strcmp(directory[i].name, name) == 0)
+            if (strcmp(directory[i].contactNumber, contactNum) == 0)
             {
                 for (j = i; j < countContact - 1; j++)
                 {
                     directory[i] = directory[j + 1];
                 }
                 countContact--;
-                printf("\nContact deleted successfully.");
+                printf("\nContact deleted successfully.\n");
                 found = 1;
                 break;
             }
@@ -142,6 +176,3 @@ void deleteContact()
         }
     }
 }
-
-// S.O.L.I.D
-// S -> Single Resposibility -> Every method should posses only single resposibility
